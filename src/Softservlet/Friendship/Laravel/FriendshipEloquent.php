@@ -102,16 +102,6 @@ class FriendshipEloquent implements FriendshipInterface
 		return (bool) $friendship;
 	}
 
-	/**
-	 * @brief - delete a friendship between a sender and a receiver
-	 *
-	 * @return bool
-	 */
-	public function status()
-	{
-		return $this->findInDb()->status;
-	}
-
 	private function findInDb()
 	{
 		return DBLayer::where(function($query)
