@@ -19,7 +19,7 @@ class FriendshipEloquent implements FriendshipInterface
 	const ACCEPTED = 1;
 	const DENIED = 2;
 
-	//sender 
+	//sender
 	private $sender = null;
 
 	//receiver
@@ -36,7 +36,7 @@ class FriendshipEloquent implements FriendshipInterface
 
 	/**
 	 * @brief - send a friendship from sender to receiver
-	 * 
+	 *
 	 * @return bool - true if success, false otherwise
 	 */
 	public function send()
@@ -50,7 +50,7 @@ class FriendshipEloquent implements FriendshipInterface
 	}
 
 	/**
-	 * @brief - check if a friendship exists between a sender 
+	 * @brief - check if a friendship exists between a sender
 	 * and a receiver
 	 *
 	 * @param int $status - a defined constant that's represents
@@ -60,18 +60,10 @@ class FriendshipEloquent implements FriendshipInterface
 	 */
 	public function exists($status = null)
 	{
-		$exists = DBLayer::where(function($query)
-		{
-			$query->where('sender_id', $this->actor->getId())->where('receiver_id', $this->user->getId());
-		})
-		->orWhere(function($query)
-		{
-			$query->where('receiver_id', $this->actor->getId())->where('sender_id', $this->user->getId());
-		});
+		$exists = $this->findInDb();
 
-		if($status != null)
-		{
-			$exists = $exists->where('status', $status); 
+		if ($status != null) {
+			$exists = $exists->where('status', $status);
 		}
 		return (bool) $exists->count();
 	}
@@ -84,14 +76,7 @@ class FriendshipEloquent implements FriendshipInterface
 	 */
 	public function accept()
 	{
-		$friendship = DBLayer::where(function($query)
-		{
-			$query->where('sender_id', $this->actor->getId())->where('receiver_id', $this->user->getId());
-		})
-		->orWhere(function($query)
-		{
-			$query->where('receiver_id', $this->actor->getId())->where('sender_id', $this->user->getId());
-		})->update(array('status'	=> $this::ACCEPTED));
+		$friendship = $this->findInDb()->update(array('status'	=> $this::ACCEPTED));
 		return (bool) $friendship;
 	}
 
@@ -102,14 +87,7 @@ class FriendshipEloquent implements FriendshipInterface
 	 */
 	public function deny()
 	{
-		$friendship = DBLayer::where(function($query)
-		{
-			$query->where('sender_id', $this->actor->getId())->where('receiver_id', $this->user->getId());
-		})
-		->orWhere(function($query)
-		{
-			$query->where('receiver_id', $this->actor->getId())->where('sender_id', $this->user->getId());
-		})->update(array('status'	=> $this::DENIED));
+		$friendship = $this->findInDb()->update(array('status'	=> $this::DENIED));
 		return (bool) $friendship;
 	}
 
@@ -120,14 +98,29 @@ class FriendshipEloquent implements FriendshipInterface
 	 */
 	public function delete()
 	{
-		$friendship = DBLayer::where(function($query)
+		$friendship = $this->findInDb()->delete();
+		return (bool) $friendship;
+	}
+
+	/**
+	 * @brief - delete a friendship between a sender and a receiver
+	 *
+	 * @return bool
+	 */
+	public function status()
+	{
+		return $this->findInDb()->status;
+	}
+
+	private function findInDb()
+	{
+		return DBLayer::where(function($query)
 		{
 			$query->where('sender_id', $this->actor->getId())->where('receiver_id', $this->user->getId());
 		})
 		->orWhere(function($query)
 		{
 			$query->where('receiver_id', $this->actor->getId())->where('sender_id', $this->user->getId());
-		})->delete();
-		return (bool) $friendship;
+		});
 	}
 }
