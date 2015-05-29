@@ -48,7 +48,7 @@ class FriendshipEloquent implements FriendshipInterface
 			'receiver_id' => $this->user->getId(),
 		]);
 
-		if ($friendsip->exists) {
+		if ($friendship->exists) {
 			return false;
 		}
 
