@@ -6,6 +6,7 @@ use Softservlet\Friendship\Laravel\Eloquent\Friendship as DBLayer;
 
 /**
  * @author Vladu Emilian Sorin <vladu@softservlet.com>
+ * @author Peter Mellett <peter@mymedialab.co.uk>
  *
  * @version 1.0
  */
@@ -62,8 +63,8 @@ class FriendshipEloquent implements FriendshipInterface
 	{
 		$exists = $this->findInDb();
 
-		if ($status != null) {
-			$exists = $exists->where('status', $status);
+		if (!is_null($status)) {
+			$exists = $exists->where('status', (int) $status);
 		}
 		return (bool) $exists->count();
 	}
@@ -76,7 +77,7 @@ class FriendshipEloquent implements FriendshipInterface
 	 */
 	public function accept()
 	{
-		$friendship = $this->findInDb()->update(array('status'	=> $this::ACCEPTED));
+		$friendship = $this->findInDb()->update(['status' => $this::ACCEPTED]);
 		return (bool) $friendship;
 	}
 
@@ -87,7 +88,7 @@ class FriendshipEloquent implements FriendshipInterface
 	 */
 	public function deny()
 	{
-		$friendship = $this->findInDb()->update(array('status'	=> $this::DENIED));
+		$friendship = $this->findInDb()->update(['status' => $this::DENIED]);
 		return (bool) $friendship;
 	}
 
@@ -104,13 +105,11 @@ class FriendshipEloquent implements FriendshipInterface
 
 	private function findInDb()
 	{
-		return DBLayer::where(function($query)
-		{
-			$query->where('sender_id', $this->actor->getId())->where('receiver_id', $this->user->getId());
-		})
-		->orWhere(function($query)
-		{
-			$query->where('receiver_id', $this->actor->getId())->where('sender_id', $this->user->getId());
+		return DBLayer::where(function($query) {
+			$query->where('sender_id', $this->actor->getId())->where('receiver_id', $this->user->getId())
+			->orWhere(function($query) {
+				$query->where('receiver_id', $this->actor->getId())->where('sender_id', $this->user->getId());
+			});
 		});
 	}
 }
