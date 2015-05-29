@@ -37,19 +37,19 @@ class LaravelFriendshipServiceProvider extends ServiceProvider {
 	 */
 	public function register()
 	{
-		$this->app->bind('Softservlet\Friendship\Core\FriendableInterface', 'Friends\User\User');
+		$this->app->bind('Softservlet\Friendship\Core\FriendableInterface', 'User');
 
 		/**
-		 * @param $param[0] - contain the actor 
+		 * @param $param[0] - contain the actor
 		 * @param $param[1] - contain the receiver
 		 */
-		$this->app->bind('Softservlet\Friendship\Core\FriendshipInterface', 
+		$this->app->bind('Softservlet\Friendship\Core\FriendshipInterface',
 		function($app, $params)
 		{
 			return new FriendshipEloquent($params['actor'], $params['user']);
 		});
 
-		$this->app->bind('Softservlet\Friendship\Core\FriendshipRepositoryInterface', 
+		$this->app->bind('Softservlet\Friendship\Core\FriendshipRepositoryInterface',
 		function($app, $params)
 		{
 			return new FriendshipRepositoryEloquent($params['actor']);

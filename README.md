@@ -3,9 +3,9 @@ friendship-management
 
 #### Package description
 
-A laravel package which provides a "friendship" management between 
+A laravel package which provides a "friendship" management between
 two entities. The relationship is called "friendship" in this package
-, but you can use this plugin to manage any relationship between 
+, but you can use this plugin to manage any relationship between
 two entities.
 
 #### Installation
@@ -14,14 +14,14 @@ The package have implementation only for Laravel 4 framework.
 
  * Run database migration:
 
-`php artisan --bench=softservlet\friendship`
+`php artisan migrate --package="softservlet/friendship"`
 
  * Add the provider into app/config/app.php array, at the 'providers' index
 
 `'Softservlet\Friendship\Laravel\Providers\LaravelFriendshipServiceProvider'`
 
- * Define the entities. 
- 
+ * Define the entities.
+
  The package give you the responsability to create the
  entity object. The next example will ilustrate you how to create a friendship
  between an object defined in your application in `App\User\User`
@@ -41,9 +41,9 @@ The package have implementation only for Laravel 4 framework.
  ```
  * Configure the service provider
 
- Since the package gives you opportunity to define your own entities, the 
+ Since the package gives you opportunity to define your own entities, the
  service provider needs to know about those entities, so let's edit it.
- In the above example, we defined our entity in App\User\User, open 
+ In the above example, we defined our entity in App\User\User, open
  `softservlet/friendship/src/Softservlet/Friendship/Laravel/Providers/LaravelFriendshipServiceProvider`
  and replace:
 
@@ -52,7 +52,7 @@ The package have implementation only for Laravel 4 framework.
  with:
 
  `$this->app->bind('Softservlet\Friendship\Core\FriendableInterface', 'App\User\User');`
- 
+
 #### How to use
 
  We define bellow a sample about how to use in Laravel context:
@@ -61,7 +61,7 @@ The package have implementation only for Laravel 4 framework.
  between two entities.
 
  ```php
- <?php 
+ <?php
 
  class FriendshipController extends BaseController
  {
@@ -69,11 +69,11 @@ The package have implementation only for Laravel 4 framework.
 	{
 		$this->friendable = $friendable;
 	}
- 	
+
 	public function createFriendship()
 	{
 		$actor = $this->friendable->find(1); //the friendable object with id 1
-		$user = $this->friendable->find(2); 
+		$user = $this->friendable->find(2);
 
 		//create a instance of Friendship object
 		$friendship = App::make('Softservlet\Friendship\Core\FriendshipInterface', array('actor' =>$actor, 'user'=> $user));
@@ -102,17 +102,17 @@ Assumming that $friendship is a instance like we did above, with $actor and $use
 we have:
  * `$friendship->send()` - sends a friendship request from $actor to $user
  * `$friendship->accept()` - the $actor will accept the friendship of $user(if exists one)
- * `$friendship->deny()` - the $actor will deny the friendship of $user(if exists one) 
+ * `$friendship->deny()` - the $actor will deny the friendship of $user(if exists one)
  * `$friendship->delete()` - the $actor will delete the connection with $user(if exists one)
  * `$friendship->exists($status)` - return boolean if friendship exists between the $actor and
  the $user. the $status parameter represents the friendship status defined in FriendshipEloquent
 
 Repository Object
 
-We've seen how to create a friendship, accept, deny and delete it, let's see how 
+We've seen how to create a friendship, accept, deny and delete it, let's see how
 to get informations about object friendships that we've made.
 
-For this, we have to call FriendshipEloquentRepository, with an actor instance asconstructor parameter 
+For this, we have to call FriendshipEloquentRepository, with an actor instance asconstructor parameter
 
 `$repository = App::make('Softservlet\Friendship\Core\FriendshipRepositoryInterface', array('actor'	=> $user));`
 
