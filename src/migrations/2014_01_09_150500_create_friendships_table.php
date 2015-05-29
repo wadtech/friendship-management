@@ -18,6 +18,8 @@ class CreateFriendshipsTable extends Migration {
 			$table->integer('receiver_id')->unsigned();
 			$table->integer('status')->default(0);
 			$table->integer('created');
+
+			$table->unique(['sender_id', 'receiver_id']);
 		});
 	}
 

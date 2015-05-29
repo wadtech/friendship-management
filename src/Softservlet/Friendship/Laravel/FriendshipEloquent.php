@@ -1,4 +1,5 @@
-<?php namespace Softservlet\Friendship\Laravel;
+<?php
+namespace Softservlet\Friendship\Laravel;
 
 use Softservlet\Friendship\Core\FriendshipInterface;
 use Softservlet\Friendship\Core\FriendableInterface;
@@ -42,11 +43,20 @@ class FriendshipEloquent implements FriendshipInterface
 	 */
 	public function send()
 	{
-		$friendship = new DBLayer;
+		$friendship = DBLayer::firstOrNew([
+			'sender_id' => $this->actor->getId(),
+			'receiver_id' => $this->user->getId(),
+		]);
+
+		if ($friendsip->exists) {
+			return false;
+		}
+
 		$friendship->sender_id = $this->actor->getId();
 		$friendship->receiver_id = $this->user->getId();
 		$friendship->status = $this::PENDING;
 		$friendship->created = time();
+
 		return $friendship->save();
 	}
 
