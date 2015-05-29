@@ -63,7 +63,7 @@ class FriendshipRepositoryEloquent implements FriendshipRepositoryInterface
         }
 
         foreach ($query->get() as $friendship) {
-            $friendships[] = $this->getFriendship($this->actor->find($friendship->receiver_id));
+            $friendships[] = $this->getFriendship($this->actor->find($friendship->sender_id));
         }
 
         return $friendships;
